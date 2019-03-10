@@ -1,18 +1,25 @@
 import Vue from 'vue'
-import vuex from 'vuex'
 import VueRouter  from 'vue-router'
 import store from './store'
-import routes from './routes'
+import routes from './route'
+import App from './app.vue'
+import './assets/scss/common.scss'
 
-Vue.use(vuex);
+Vue.use(VueRouter)
 
 new Vue({
   el: "#app",
-  store: store,
-  router: new VueRouter({routes}),
-  data: () => {
-    return {
-      name: '单页vue'
+  store,
+  router: new VueRouter({
+    mode: 'history',
+    routes,
+    scrollBehavior (to, from, savedPosition) {
+      if (savedPosition) {
+        return savedPosition
+      } else {
+        return { x: 0, y: 0 }
+      }
     }
-  }
+  }),
+  render: h => h(App)
 })
