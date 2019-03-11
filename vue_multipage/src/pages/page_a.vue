@@ -10,6 +10,9 @@ export default {
     return {
 
     }
+  },
+  mounted(){
+    console.log('Apage')
   }
 }
 </script>

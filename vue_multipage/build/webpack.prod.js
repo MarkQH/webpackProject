@@ -16,8 +16,8 @@ module.exports = {
           priority: 0
         },
         vue: {
-          name: "vue.boundle",
-          test: "vue",
+          name: "vue",
+          test: /\.js$/,
           chunks: "all",
           priority: 10
         }
@@ -38,6 +38,5 @@ module.exports = {
         path.join(__dirname, "../src/scss/*.css"),
       ])
     }),
-    new BundleAnalyzerPlugin()
   ]
 }

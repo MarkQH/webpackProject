@@ -15,8 +15,6 @@ const ROOT_PATH = path.resolve(__dirname, '..')
 const ENTRY_PATH = path.resolve(__dirname, '../src/js/')
 const PAGES_PATH = path.resolve(__dirname, '../views/')
 
-
-
 const entries = () => {
   let jsPaths = {}
   let files = fs.readdirSync(ENTRY_PATH)
@@ -26,6 +24,7 @@ const entries = () => {
       jsPaths[name] = path.join(ENTRY_PATH, name)
     }
   }
+  jsPaths.vue = 'vue'
   return jsPaths
 }
 
@@ -39,7 +38,8 @@ const views = () => {
       pages.push(new HtmlWebpackPlugin({
         filename: `${name}.html`,
         template: path.join(PAGES_PATH, `${name}${ext}`),
-        chunks: [`common`,`${name}`],
+        chunks: ['vue',`common`,`${name}`],
+        chunksSortMode: 'manual',
         minify: {
           collapseWhitespace: true
         }
@@ -71,7 +71,7 @@ const generateConfig = (isProd, isCompress) => {
 
   let vueLoader = [
     {
-      loader: "vue-loader"
+      loader: "vue-loader",
     }
   ]
 
@@ -144,19 +144,20 @@ const generateConfig = (isProd, isCompress) => {
       path: path.resolve(ROOT_PATH, 'dist'),
       publicPath: './',
       filename: isProd ? "scripts/[name]-[hash:5]-boundle.js" : "scripts/[name].js",
-      chunkFilename: "[name]-[hash:5].chunk.js"
+      chunkFilename: isProd ? "scripts/[name]-[hash:5].chunk.js" : "scripts/[name].js"
     },
     resolve: {
       alias: {
-        'vue$': 'vue/dist/vue.min.js'
+        'vue$': 'vue/dist/vue.esm.js',
+        'vuex$': 'vuex/dist/vuex.min.js'
       }
     },
     module: {
       rules: [
-        { test: /\.pug$/, oneOf: pugLoader },
         { test: /\.vue$/, use: vueLoader },
+        { test: /\.pug$/, oneOf: pugLoader },
         { test: /\.js$/, use: scriptLoader, exclude: /(node_modules)/},
-        { test: /\.(scss|css)$/, use: styleLoader, resolve: {extensions: [".scss", ".css"],} },
+        { test: /\.(scss|css)$/, use: styleLoader },
         { test: /\.(png|jpg|jpeg|gif)$/, use: imageLoader },
         { test: /\.(eot|woff2?|ttf|svg)$/, use: fontLoader },
       ]
@@ -166,10 +167,10 @@ const generateConfig = (isProd, isCompress) => {
       new MiniCssExtractPlugin({
         filename: isProd ? 'styles/[name]-[hash:5].css' : "styles/[name].css",
       }),
-      new CompressionPlugin({
+      isCompress ? new CompressionPlugin({
         test: new RegExp(/\.(js|css)$/),
         threshold: 10240,
-      })
+      }) : (() => {})
     ].concat(views())
   }
 }

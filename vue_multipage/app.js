@@ -14,6 +14,7 @@ export default class {
     this.mount()
   }
   mount () {
+    console.log('启动了')
     new Vue({
       el: this.el,
       components: this.components,
