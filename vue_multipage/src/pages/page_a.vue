@@ -1,6 +1,7 @@
 <template lang="pug">
   div
     h1 我是A页面
+    img(src="")
 </template>
 
 <script>

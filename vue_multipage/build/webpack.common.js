@@ -6,6 +6,7 @@ const merge = require("webpack-merge")
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+const CompressionPlugin = require("compression-webpack-plugin")
 const productionConfig = require("./webpack.prod")
 const developmentConfig = require("./webpack.dev")
 const pkg = require('../package.json')
@@ -25,7 +26,7 @@ const entries = () => {
       jsPaths[name] = path.join(ENTRY_PATH, name)
     }
   }
-  return jsPaths;
+  return jsPaths
 }
 
 const views = () => {
@@ -45,11 +46,10 @@ const views = () => {
       }))
     }
   }
-  return pages;
+  return pages
 }
 
-const generateConfig = (isProd) => {
-
+const generateConfig = (isProd, isCompress) => {
   let spritesConfig = {
     spritePath: "images",
     filterBy: function (image) {
@@ -65,15 +65,31 @@ const generateConfig = (isProd) => {
       loader: "babel-loader",
       options: {
         plugins: isProd ? ['lodash'] : []
-      }
+      },
+    }
+  ]
+
+  let vueLoader = [
+    {
+      loader: "vue-loader"
+    }
+  ]
+
+  let pugLoader = [
+    {
+      loader: 'pug-loader',
+      exclude: /\.vue.pug$/,
+      options: {
+        pretty: !isProd,
+      },
+    },
+    {
+      loader: "pug-plain-loader",
     }
   ]
 
   let styleLoader = [
-    isProd ? 
-    { loader: MiniCssExtractPlugin.loader, options: { publicPath: '../'} }
-    :
-    'vue-style-loader',
+    isProd ? { loader: MiniCssExtractPlugin.loader, options: { publicPath: '../'} }:'vue-style-loader',
     {
       loader: "css-loader",
       options: {
@@ -95,24 +111,12 @@ const generateConfig = (isProd) => {
       loader: "sass-loader"
     }
   ]
-
-  let vueLoader = [
-    {
-      loader: "vue-loader"
-    }
-  ]
-
-  let pugLoader = [
-    {
-      loader: "pug-plain-loader",
-    }
-  ]
   
   let imageLoader = [
     {
       loader: "url-loader",
       options: {
-        name: "[name]-[hash:5].min.[ext]",
+        name: isProd ? "[name]-[hash:5].min.[ext]" : "[name].[ext]",
         limit: 1024*10,
         outputPath: "images",
       } 
@@ -126,7 +130,7 @@ const generateConfig = (isProd) => {
     {
       loader: 'url-loader',
       options: {
-        name: "[name]-[hash:5].min.[ext]",
+        name: isProd ? "[name]-[hash:5].min.[ext]" : "[name].[ext]",
         limit: 1024*5,
         outputPath: "font",
       }
@@ -134,30 +138,38 @@ const generateConfig = (isProd) => {
   ]
 
   return {
+    mode: isProd ? 'production' : 'development',
     entry: entries(),
     output: {
       path: path.resolve(ROOT_PATH, 'dist'),
       publicPath: './',
-      filename: "scripts/[name]-[hash:5]-boundle.js",
+      filename: isProd ? "scripts/[name]-[hash:5]-boundle.js" : "scripts/[name].js",
       chunkFilename: "[name]-[hash:5].chunk.js"
     },
     resolve: {
       alias: {
-        '@': ROOT_PATH
+        'vue$': 'vue/dist/vue.min.js'
       }
     },
     module: {
       rules: [
+        { test: /\.pug$/, oneOf: pugLoader },
         { test: /\.vue$/, use: vueLoader },
-        { test: /\.pug$/, use: pugLoader },
-        { test: /\.js$/, use: scriptLoader },
-        { test: /\.(scss|css)$/, use: styleLoader },
+        { test: /\.js$/, use: scriptLoader, exclude: /(node_modules)/},
+        { test: /\.(scss|css)$/, use: styleLoader, resolve: {extensions: [".scss", ".css"],} },
         { test: /\.(png|jpg|jpeg|gif)$/, use: imageLoader },
         { test: /\.(eot|woff2?|ttf|svg)$/, use: fontLoader },
       ]
     },
     plugins: [
       new VueLoaderPlugin(),
+      new MiniCssExtractPlugin({
+        filename: isProd ? 'styles/[name]-[hash:5].css' : "styles/[name].css",
+      }),
+      new CompressionPlugin({
+        test: new RegExp(/\.(js|css)$/),
+        threshold: 10240,
+      })
     ].concat(views())
   }
 }
@@ -165,8 +177,8 @@ const generateConfig = (isProd) => {
 module.exports = env => {
 
   let isProd = !!env.production
-
+  let isCompress = !!env.compress
   let config = isProd ? productionConfig : developmentConfig
 
-  return merge(generateConfig(isProd), config)
+  return merge(generateConfig(isProd, isCompress), config)
 }
