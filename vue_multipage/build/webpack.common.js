@@ -72,6 +72,17 @@ const generateConfig = (isProd, isCompress) => {
   let vueLoader = [
     {
       loader: "vue-loader",
+      options: {
+        loaders: {
+          scss: [
+            MiniCssExtractPlugin.loader,
+            'vue-style-loader',
+            'css-loader',
+            'postcss-loader',
+            'sass-loader',
+          ],
+        },
+      }
     }
   ]
 

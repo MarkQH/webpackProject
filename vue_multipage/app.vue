@@ -1,5 +1,7 @@
 <template lang="pug">
-  div APP页面
+  div 
+    div APP页面
+    slot
 </template>
 <script>
 export default {

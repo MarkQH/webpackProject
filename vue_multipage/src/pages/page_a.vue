@@ -12,6 +12,7 @@ export default {
     }
   },
   mounted(){
+    console.log('启动了2')
     console.log('Apage')
   }
 }

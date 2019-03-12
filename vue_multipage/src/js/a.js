@@ -1,7 +1,8 @@
+import '../scss/a.scss'
 import common from './common/common'
 import App from '../../app'
-import pagea from '../pages/page_a.vue'
-import '../scss/a.scss'
+import Apage from '../pages/page_a.vue'
+
 new App({
-  pagea
+  Apage
 })
