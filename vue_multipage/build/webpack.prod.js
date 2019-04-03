@@ -15,11 +15,17 @@ module.exports = {
           minChunks: 2,
           priority: 0
         },
-        vue: {
-          name: "vue",
-          test: /\.js$/,
+        asios: {
+          name: "axios",
+          test: /axios.min.js/,
           chunks: "all",
           priority: 10
+        },
+        vue: {
+          name: "vue",
+          test: /vue.esm.js/,
+          chunks: "all",
+          priority: 20
         }
       }
     }
@@ -38,5 +44,6 @@ module.exports = {
         path.join(__dirname, "../src/scss/*.css"),
       ])
     }),
+    new BundleAnalyzerPlugin()
   ]
 }

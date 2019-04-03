@@ -3,8 +3,8 @@ import Vuex from 'vuex'
 // import createWebsocketPlugin from './plugins/createWebsocketPlugin'
 import createLogger from 'vuex/dist/logger'
 
-import aStore from './modules/aStore'
-import bStore from './modules/bStore'
+import home from './modules/home'
+import list from './modules/list'
 
 Vue.use(Vuex)
 
@@ -15,8 +15,8 @@ export default new Vuex.Store({
   actions:{},
   mutations:{},
   modules: {
-    bStore,
-    aStore
+    list,
+    home
   },
   strict: debug,
   plugins: debug ? [createLogger()] : []

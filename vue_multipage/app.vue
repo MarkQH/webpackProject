@@ -1,12 +1,12 @@
 <template lang="pug">
-  div 
-    div APP页面
+  div
     slot
 </template>
 <script>
 export default {
   mounted(){
     console.log('APP')
+    this.$_get('https://www.baidu.com').then(res => console.log(res)).catch(err => console.log(err))
   }
 }
 </script>

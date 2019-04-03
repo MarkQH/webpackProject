@@ -3,6 +3,9 @@
 import Vue from 'vue'
 import App from './app.vue'
 import store from './store'
+import {install as Axios} from './api/install'
+
+Vue.use(Axios)
 
 export default class {
   constructor (components = {}, el = "#app") {
@@ -14,8 +17,6 @@ export default class {
     this.mount()
   }
   mount () {
-    console.log('启动了1')
-    console.log(this.components)
     new Vue({
       el: this.el,
       components: this.components,

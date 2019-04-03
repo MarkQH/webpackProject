@@ -38,7 +38,7 @@ const views = () => {
       pages.push(new HtmlWebpackPlugin({
         filename: `${name}.html`,
         template: path.join(PAGES_PATH, `${name}${ext}`),
-        chunks: ['vue',`common`,`${name}`],
+        chunks: ['vue','axios','common',`${name}`],
         chunksSortMode: 'manual',
         minify: {
           collapseWhitespace: true
@@ -160,7 +160,8 @@ const generateConfig = (isProd, isCompress) => {
     resolve: {
       alias: {
         'vue$': 'vue/dist/vue.esm.js',
-        'vuex$': 'vuex/dist/vuex.min.js'
+        'vuex$': 'vuex/dist/vuex.min.js',
+        'axios$': 'axios/dist/axios.min.js'
       }
     },
     module: {

@@ -1,0 +1,1 @@
+export const MENBER_DATA = '/rights/menberInfo'
