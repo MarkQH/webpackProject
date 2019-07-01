@@ -22,10 +22,6 @@ const mutations = {
   handleFunction (state, { items }) {
     state.items = items
   },
-
-  handleFunction (state, status) {
-    state.checkoutStatus = status
-  }
 }
 
 export default {

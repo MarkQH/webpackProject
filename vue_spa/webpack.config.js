@@ -167,18 +167,12 @@ module.exports = env => {
     devServer: {
       port:8081,
       hot: true,
-      overlay: true,
-      clientLogLevel: "error",
       publicPath: "/",
       contentBase: path.resolve(__dirname, "./dist"),
       proxy: {
-        "/comments": {
-          target: "https://m.weibo.cn",
+        "/linkfin": {
+          target: "http://localhost:34000",
           changeOrigin: true,
-          logLevel: "debug",
-          headers: {
-            cookie: ""
-          }
         }
       },
     historyApiFallback: true
