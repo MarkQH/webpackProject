@@ -36,8 +36,9 @@
   }
 </script>
 
-<style lang='scss' scoped>
+<style lang='less' scoped>
 .container{
+  background-color: cadetblue;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -12,7 +12,7 @@
   }
 </script>
 
-<style lang='scss' scoped>
+<style lang='less' scoped>
 body{
   background-color: burlywood;
 }
