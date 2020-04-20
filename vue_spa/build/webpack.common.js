@@ -4,20 +4,7 @@ const prodConfig = require("./webpack.prod");
 const devConfig = require("./webpack.dev");
 const merge = require("webpack-merge");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const commonCssLoader = [
-  MiniCssExtractPlugin.loader,
-  'css-loader',
-  {
-    loader: 'postcss-loader', // css 兼容性处理
-    options: {
-      ident: 'postcss',
-      plugins: () => [
-        require('postcss-preset-env')() // 匹配package.json 文件的browerslist
-      ]
-    }
-  },
-];
+
 const generateConfig = (isProd) => {
   return {
     stats: {
@@ -34,13 +21,6 @@ const generateConfig = (isProd) => {
     },
     module: {
       rules: [
-        { test: /\.css$/,
-          use: [...commonCssLoader]
-        },
-        {
-          test: /\.less$/,
-          use: [...commonCssLoader, 'less-loader']
-        },
         {
           test: /\.vue$/,
           loader: 'vue-loader',
@@ -84,9 +64,6 @@ const generateConfig = (isProd) => {
     },
     plugins: [
       new VueLoaderPlugin(),
-      new MiniCssExtractPlugin({
-        filename: 'css/[name]_[hash].css'
-      }),
     ]
   };
 };
@@ -94,6 +71,6 @@ const generateConfig = (isProd) => {
 module.exports = env => {
   const isProd = !!env.production;
   const config = (isProd ? prodConfig : devConfig);
-  console.log(generateConfig(isProd), config);
+  console.log(config);
   return merge(generateConfig(isProd), config);
 }

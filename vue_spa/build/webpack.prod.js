@@ -3,8 +3,23 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plugin");
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const AddAssetHtmlWebpackPlugin = require('add-asset-html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpack = require('webpack');
 const { resolve } = require('path');
+const commonCssLoader = [
+  MiniCssExtractPlugin.loader,
+  'css-loader',
+  {
+    loader: 'postcss-loader', // css 兼容性处理
+    options: {
+      ident: 'postcss',
+      plugins: () => [
+        require('postcss-preset-env')() // 匹配package.json 文件的browerslist
+      ]
+    }
+  },
+];
+
 module.exports = {
   mode: 'production', // 生产环境会自动压缩js代码
   // externals通过CDN引入的、拒绝jQuery被打包进来
@@ -13,6 +28,13 @@ module.exports = {
   },
   module: {
     rules: [
+      { test: /\.css$/,
+        use: [...commonCssLoader]
+      },
+      {
+        test: /\.less$/,
+        use: [...commonCssLoader, 'less-loader']
+      },
       {
         oneOf: [
           {
@@ -61,16 +83,21 @@ module.exports = {
     ]
   },
   plugins: [
-    
+    new CleanWebpackPlugin({
+      verbose: true
+    }),
     new HtmlWebpackPlugin({
       template: resolve(__dirname, '../index.html'),
-      filename: 'ss.html',
+      filename: 'index.html',
       minify: {
         // 移除空格
         collapseWhitespace: true,
         // 移除注释
         removeComments: true
       }
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name]_[hash].css'
     }),
     new OptimizeCssAssetsWebpackPlugin(),
     new WorkboxWebpackPlugin.GenerateSW({
@@ -89,9 +116,6 @@ module.exports = {
     // 将某个文件打包输出，并在html中自动引入该文件
     new AddAssetHtmlWebpackPlugin({
       filepath: resolve(__dirname, '../dll/*.js')
-    }),
-    new CleanWebpackPlugin({
-      verbose: true
     }),
   ],
   /*
