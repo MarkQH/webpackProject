@@ -7,7 +7,7 @@ import {install as Axios} from './api/install';
 import './assets/less/common.less';
 
 // 注册serviceworker
-if('serviceworker' in navigator) {
+if('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./service-worker.js')
       .then(() => {

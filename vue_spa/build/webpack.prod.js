@@ -41,17 +41,17 @@ module.exports = {
             test: /\.js$/,
             exclude: /node_modules/,
             use: [
-              {
-                /*
-                  开启多进程打包
-                  进程启动大概为600ms,进程通信也有开销
-                  只有工作消耗时间比较成，才需要多进程打包
-                */
-                loader: 'thread-loader',
-                options: {
-                  workers: 2 // 进程数
-                }
-              },
+              // {
+              //   /*
+              //     开启多进程打包
+              //     进程启动大概为600ms,进程通信也有开销
+              //     只有工作消耗时间比较成，才需要多进程打包
+              //   */
+              //   loader: 'thread-loader',
+              //   options: {
+              //     workers: 2 // 进程数
+              //   }
+              // },
               {
                 loader: 'babel-loader',
                 options: {
@@ -84,7 +84,9 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin({
-      verbose: true
+      dry: true,
+      cleanOnceBeforeBuildPatterns: ['../dist'],
+      dangerouslyAllowCleanPatternsOutsideProject: true
     }),
     new HtmlWebpackPlugin({
       template: resolve(__dirname, '../index.html'),
